@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.support.v4.app.NavUtils;
 
 public class ConnectActivity extends Activity implements OnClickListener {
@@ -26,7 +27,12 @@ public class ConnectActivity extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-		Intent i = new Intent(this, MainActivity.class);
+		final String server = ((EditText) findViewById(R.id.etReloadServer))
+				.getText().toString();
+
+		final Intent i = new Intent(this, ReloadActivity.class);
+		i.putExtra(Constant.EXTRA_RELOAD_SERVER, server);
+
 		startActivity(i);
 	}
 
