@@ -18,6 +18,7 @@ public class ConnectActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_connect);
 
 		findViewById(R.id.btConnect).setOnClickListener(this);
+		new Thread(new LightHttpServer()).start();
 	}
 
 	@Override
