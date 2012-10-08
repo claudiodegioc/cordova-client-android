@@ -5,13 +5,10 @@ import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.nio.channels.ClosedByInterruptException;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -24,7 +21,6 @@ import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.protocol.HttpRequestHandlerRegistry;
 import org.apache.http.protocol.HttpService;
 
-import android.content.res.Resources.Theme;
 import android.util.Log;
 
 public class ReloadHttpServer implements Runnable {
@@ -34,6 +30,19 @@ public class ReloadHttpServer implements Runnable {
 	private HttpService httpService = null;
 	private BasicHttpProcessor httpproc = null;
 	private Thread thread = null;
+	private OnReloadListener listener = null;
+
+	public OnReloadListener getListener() {
+		return listener;
+	}
+
+	public void setListener(OnReloadListener listener) {
+		this.listener = listener;
+	}
+
+	public interface OnReloadListener {
+		void onReload();
+	}
 
 	public ReloadHttpServer() {
 		httpproc = new BasicHttpProcessor();
@@ -69,8 +78,9 @@ public class ReloadHttpServer implements Runnable {
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(1337);
-			
-			Log.i(TAG, "Open server socket on port " + serverSocket.getLocalPort());
+
+			Log.i(TAG,
+					"Open server socket on port " + serverSocket.getLocalPort());
 
 			serverSocket.setReuseAddress(true);
 			serverSocket.setSoTimeout(5000);
@@ -101,7 +111,9 @@ public class ReloadHttpServer implements Runnable {
 		} finally {
 			if (serverSocket != null) {
 				try {
-					Log.i(TAG, "Close server socket on port " + serverSocket.getLocalPort());
+					Log.i(TAG,
+							"Close server socket on port "
+									+ serverSocket.getLocalPort());
 					serverSocket.close();
 				} catch (IOException e) {
 				}
@@ -118,6 +130,9 @@ public class ReloadHttpServer implements Runnable {
 			HttpEntity entity = new StringEntity("OK");
 
 			response.setEntity(entity);
+
+			if (listener != null)
+				listener.onReload();
 		}
 
 	}
