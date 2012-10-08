@@ -12,13 +12,20 @@ import android.support.v4.app.NavUtils;
 
 public class ConnectActivity extends Activity implements OnClickListener {
 
+	ReloadHttpServer server = new ReloadHttpServer();	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_connect);
 
 		findViewById(R.id.btConnect).setOnClickListener(this);
-		new Thread(new LightHttpServer()).start();
+		server.start();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		server.stop();
+		super.onDestroy();
 	}
 
 	@Override

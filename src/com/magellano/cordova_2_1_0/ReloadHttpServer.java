@@ -1,8 +1,11 @@
 package com.magellano.cordova_2_1_0;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.nio.channels.ClosedByInterruptException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -21,15 +24,18 @@ import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.protocol.HttpRequestHandlerRegistry;
 import org.apache.http.protocol.HttpService;
 
+import android.content.res.Resources.Theme;
 import android.util.Log;
 
-public class LightHttpServer implements Runnable {
+public class ReloadHttpServer implements Runnable {
+
+	final static private String TAG = "ReloadHttpServer";
 
 	private HttpService httpService = null;
 	private BasicHttpProcessor httpproc = null;
+	private Thread thread = null;
 
-	public LightHttpServer() {
-
+	public ReloadHttpServer() {
 		httpproc = new BasicHttpProcessor();
 
 		httpService = new HttpService(httpproc,
@@ -44,42 +50,73 @@ public class LightHttpServer implements Runnable {
 
 	}
 
+	synchronized public void start() {
+		if (thread == null) {
+			Log.i(TAG, "Start server");
+			thread = new Thread(this);
+			thread.start();
+		}
+	}
+
+	synchronized public void stop() {
+		if (thread != null) {
+			Log.i(TAG, "Stop thread");
+			thread.interrupt();
+		}
+	}
+
 	public void run() {
+		ServerSocket serverSocket = null;
 		try {
-			ServerSocket serverSocket = new ServerSocket(1337);
+			serverSocket = new ServerSocket(1337);
+			
+			Log.i(TAG, "Open server socket on port " + serverSocket.getLocalPort());
 
 			serverSocket.setReuseAddress(true);
+			serverSocket.setSoTimeout(5000);
 
-			Log.d("teytew", "wating");
+			while (!Thread.currentThread().isInterrupted()) {
+				Log.d(TAG, "Waiting for new connection");
 
-			while (true) {
+				try {
+					final Socket connection = serverSocket.accept();
 
-				final Socket connection = serverSocket.accept();
+					final DefaultHttpServerConnection serverConnection = new DefaultHttpServerConnection();
 
-				final DefaultHttpServerConnection serverConnection = new DefaultHttpServerConnection();
+					serverConnection.bind(connection, new BasicHttpParams());
 
-				serverConnection.bind(connection, new BasicHttpParams());
-
-				httpService.handleRequest(serverConnection,
-						new BasicHttpContext());
-				serverConnection.close();
+					httpService.handleRequest(serverConnection,
+							new BasicHttpContext());
+					serverConnection.close();
+				} catch (SocketTimeoutException e) {
+					// ignore and keep looping
+				} catch (InterruptedIOException e) {
+					// got signal while waiting for connection request
+					break;
+				}
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
+		} finally {
+			if (serverSocket != null) {
+				try {
+					Log.i(TAG, "Close server socket on port " + serverSocket.getLocalPort());
+					serverSocket.close();
+				} catch (IOException e) {
+				}
+			}
 		}
-
 	}
 
 	class LightHttpRequestHandler implements HttpRequestHandler {
 
 		public void handle(HttpRequest request, HttpResponse response,
 				HttpContext context) throws HttpException, IOException {
-			Log.i("test", "relaod function");
-			
+			Log.i(TAG, "Reload action called");
+
 			HttpEntity entity = new StringEntity("OK");
-			
+
 			response.setEntity(entity);
 		}
 
