@@ -4,5 +4,6 @@
     <string name="menu_reload">Reload</string>
     <string name="menu_connect">Connect</string>
     <string name="title_activity_connect">Cordova AM</string>
+    <string name="cordova_version">Cordova V. 2.1.0</string>
 
 </resources>
