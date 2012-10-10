@@ -1,9 +1,8 @@
 <resources>
 
-    <string name="app_name">Cordova_2_1_0</string>
+    <string name="app_name">Cordova AM Client</string>
     <string name="menu_reload">Reload</string>
     <string name="menu_connect">Connect</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_connect">ConnectActivity</string>
+    <string name="title_activity_connect">Cordova AM</string>
 
 </resources>
