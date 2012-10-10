@@ -71,6 +71,7 @@ public class ReloadHttpServer implements Runnable {
 		if (thread != null) {
 			Log.i(TAG, "Stop thread");
 			thread.interrupt();
+			thread = null;
 		}
 	}
 
