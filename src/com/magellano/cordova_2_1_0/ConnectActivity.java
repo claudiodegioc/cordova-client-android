@@ -19,11 +19,6 @@ public class ConnectActivity extends Activity implements OnClickListener {
 		findViewById(R.id.btConnect).setOnClickListener(this);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_connect, menu);
-		return true;
-	}
 
 	public void onClick(View v) {
 		final String server = ((EditText) findViewById(R.id.etReloadServer))

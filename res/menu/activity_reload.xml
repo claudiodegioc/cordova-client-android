@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menuReload"
+        android:title="@string/menu_reload"
+        android:icon="@drawable/refresh_icon"/>
+    <item android:id="@+id/menuConnect"
+        android:title="@string/menu_connect" 
+        android:icon="@drawable/connect_icon"/>
+    
+</menu>

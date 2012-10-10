@@ -11,6 +11,9 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.magellano.cordova_2_1_0.ReloadHttpServer.OnReloadListener;
@@ -31,8 +34,9 @@ public class ReloadActivity extends DroidGap implements OnReloadListener {
 		// Start reload server
 		reloadServer.setListener(this);
 		reloadServer.start();
-		
-		connect();	
+
+		connect();
+		reload(false);
 	}
 
 	@Override
@@ -42,15 +46,10 @@ public class ReloadActivity extends DroidGap implements OnReloadListener {
 	}
 
 	public void onReload() {
-		// TODO Auto-generated method stub
-
 		runOnUiThread(new Runnable() {
 
 			public void run() {
-
-				loadUrl("http://" + server + ":1337/index.html");
-				Toast.makeText(ReloadActivity.this, "Reload Done",
-						Toast.LENGTH_SHORT).show();
+				reload(true);
 			}
 		});
 	}
@@ -60,13 +59,44 @@ public class ReloadActivity extends DroidGap implements OnReloadListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setMessage("Unable to connect to " + server + " !!!");
 		builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			
+
 			public void onClick(DialogInterface dialog, int which) {
 				ReloadActivity.this.endActivity();
 			}
 		});
 		// Create the AlertDialog object and return it
 		return builder.create();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.activity_reload, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.menuReload:
+			reload(true);
+			return true;
+		case R.id.menuConnect:
+			connect();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void reload(boolean showToast) {
+		loadUrl("http://" + server + ":1337/index.html");
+		if (showToast) {
+			Toast.makeText(ReloadActivity.this, "Reload Done",
+					Toast.LENGTH_SHORT).show();
+		}
+
 	}
 
 	private void connect() {
