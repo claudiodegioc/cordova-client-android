@@ -5,6 +5,7 @@
     android:background="@drawable/background">
 
     <EditText
+        android:inputType="text"
         android:id="@+id/etReloadServer"
         android:layout_width="fill_parent"
         android:layout_height="60dip"
@@ -26,7 +27,6 @@
         android:text="@string/menu_connect" />
 
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
