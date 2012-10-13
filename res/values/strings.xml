@@ -1,9 +1,12 @@
 <resources>
 
+    <!-- generic string -->
+    <string name="reconnect">ReConnect</string>
+    <string name="connect">Connect</string>
     <string name="app_name">Cordova AM Client</string>
     <string name="menu_reload">Reload</string>
-    <string name="menu_connect">Connect</string>
+    <string name="menu_reconnect">Reconnect</string>
     <string name="title_activity_connect">Cordova AM</string>
-    <string name="cordova_version">Cordova V. 2.1.0</string>
+    <string name="cordova_version">Cordova 2.1.0</string>
 
 </resources>
