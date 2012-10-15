@@ -1,5 +1,9 @@
 package com.magellano.cordova_2_1_0;
 
+import java.util.Timer;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.DroidGap;
 import org.apache.cordova.api.CordovaInterface;
@@ -16,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,8 +30,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.magellano.cordova_2_1_0.ReloadHttpServer.OnReloadListener;
 
-public class ReloadActivity extends Activity implements CordovaInterface,
-		OnReloadListener {
+public class ReloadActivity extends Activity implements CordovaInterface, OnReloadListener {
 
 	final static private String TAG = "ReloadActivity";
 
@@ -37,6 +41,8 @@ public class ReloadActivity extends Activity implements CordovaInterface,
 	private String server = null;
 
 	private CordovaWebView cwv = null;
+
+	private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -63,13 +69,21 @@ public class ReloadActivity extends Activity implements CordovaInterface,
 		super.onDestroy();
 	}
 
-	public void onReload() {
-		runOnUiThread(new Runnable() {
+	final private Runnable reloadTask = new Runnable() {
 
-			public void run() {
-				reload();
-			}
-		});
+		public void run() {
+			runOnUiThread(new Runnable() {
+
+				public void run() {
+					reload();
+				}
+			});
+
+		}
+	};
+
+	public void onReload() {
+		reloadTask.run();
 	}
 
 	@Override
@@ -103,6 +117,9 @@ public class ReloadActivity extends Activity implements CordovaInterface,
 		case R.id.menuConnect:
 			connect();
 			return true;
+		case R.id.menuAutoRelaod:
+			autoreload();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -122,6 +139,22 @@ public class ReloadActivity extends Activity implements CordovaInterface,
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 			showDialog(ERROR_DIALOG);
+		}
+	}
+
+	private void autoreload() {
+		// run
+		// handler.p
+
+		if (scheduler.getTaskCount() == 0) {
+
+			final int time = getPreferences(MODE_PRIVATE).getInt(Constant.SHARED_PREF_RELOAD_TIME, 5);
+
+			scheduler.scheduleAtFixedRate(reloadTask, 1, time, TimeUnit.SECONDS);
+
+		} else {
+			scheduler.shutdownNow();
+			scheduler = new ScheduledThreadPoolExecutor(1);
 		}
 	}
 

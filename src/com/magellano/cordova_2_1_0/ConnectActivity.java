@@ -1,5 +1,7 @@
 package com.magellano.cordova_2_1_0;
 
+import java.lang.ref.PhantomReference;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -44,5 +46,17 @@ public class ConnectActivity extends Activity implements OnClickListener {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.activity_connect, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.menuSettings:
+			startActivity(new Intent(this, PreferenceActivity.class));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }

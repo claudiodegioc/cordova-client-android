@@ -1,9 +1,16 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menuReload"
-        android:title="@string/menu_reload"
-        android:icon="@drawable/refresh_icon"/>
-    <item android:id="@+id/menuConnect"
-        android:title="@string/menu_reconnect" 
-        android:icon="@drawable/connect_icon"/>
-    
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menuReload"
+        android:icon="@drawable/refresh_icon"
+        android:title="@string/menu_reload"/>
+    <item
+        android:id="@+id/menuConnect"
+        android:icon="@drawable/connect_icon"
+        android:title="@string/menu_reconnect"/>
+    <item
+        android:id="@+id/menuAutoRelaod"
+		android:icon="@drawable/refresh_icon"
+        android:title="@string/menu_enable_autoreload"/>
+
 </menu>

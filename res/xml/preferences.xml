@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="pref_reload_time"
+        android:title="Auto Reload"
+        android:summary="Auto reload time"
+        android:defaultValue="5"
+        android:persistent="true"
+        android:inputType="number"></EditTextPreference>
+</PreferenceScreen>
