@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.magellano.cordova_2_1_0.ReloadHttpServer.OnReloadListener;
@@ -52,6 +53,8 @@ public class ReloadActivity extends Activity implements CordovaInterface, OnRelo
 		setContentView(R.layout.activity_reload);
 		cwv = (CordovaWebView) findViewById(R.id.wvCordova);
 		cwv.setWebViewClient(new ReloadWebViewClient());
+		WebSettings settings = cwv.getSettings();
+		settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
 		// setContentView(R.layout.activity_reload);
 		server = getIntent().getStringExtra(Constant.EXTRA_RELOAD_SERVER);
